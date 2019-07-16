@@ -5,6 +5,14 @@ The array prototype is filled with useful methods like `filter`, `map`, and `red
 ## API
 
 ```javascript
+entries(obj)
+```
+
+Returns an iterator object that contains the key/value pairs for each entry in `obj`.
+
+---
+
+```javascript
 every(obj, fn)
 ```
 
@@ -61,6 +69,14 @@ Returns a string created by concatenating the values in `obj`, separated by `sep
 ---
 
 ```javascript
+keys(obj)
+```
+
+Returns an iterator object that contains the keys for each entry in `obj`.
+
+---
+
+```javascript
 keyOf(obj, value)
 ```
 
@@ -89,3 +105,11 @@ some(obj, fn)
 ```
 
 Returns `true` if invoking `fn` for at least one entry in `obj` returns something truthy. Otherwise, returns `false`. `fn` is invoked with three arguments: `value`, `key`, `obj`.
+
+---
+
+```javascript
+values(obj)
+```
+
+Returns an iterator object that contains the values for each entry in `obj`.

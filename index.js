@@ -1,3 +1,9 @@
+const fns = {entries, every, filter, find, findKey, forEach, includes, join, keyOf, keys, map, reduce, some, values};
+
+function entries(obj) {
+  return Object.entries(obj).values();
+}
+
 function every(obj, fn) {
   return Object.keys(obj).every(key => fn(obj[key], key, obj));
 }
@@ -34,6 +40,10 @@ function keyOf(obj, value) {
   return Object.keys(obj).find(key => obj[key] === value);
 }
 
+function keys(obj) {
+  return Object.keys(obj).values();
+}
+
 function map(obj, fn) {
   return Object.keys(obj).reduce((accumulator, key) => {
     const value = fn(obj[key], key, obj);
@@ -54,4 +64,8 @@ function some(obj, fn) {
   return Object.keys(obj).some(key => fn(obj[key], key, obj));
 }
 
-module.exports = {every, filter, find, findKey, forEach, includes, join, keyOf, map, reduce, some};
+function values(obj) {
+  return Object.values(obj).values();
+}
+
+module.exports = {...fns, wrap};
