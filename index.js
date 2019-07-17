@@ -1,71 +1,109 @@
-const fns = {entries, every, filter, find, findKey, forEach, includes, join, keyOf, keys, map, reduce, some, values};
-
-function entries(obj) {
-  return Object.entries(obj).values();
+function* entries(obj) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) yield [key, obj[key]];
+  }
 }
 
 function every(obj, fn) {
-  return Object.keys(obj).every(key => fn(obj[key], key, obj));
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    if (!fn(obj[key], key, obj)) return false;
+  }
+  return true;
 }
 
 function filter(obj, fn) {
-  return Object.keys(obj).reduce((accumulator, key) => {
-    if (!fn(obj[key], key, obj)) return accumulator;
-    return {...accumulator, [key]: obj[key]};
-  }, {});
+  const result = {};
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    if (fn(obj[key], key, obj)) result[key] = obj[key];
+  }
+  return result;
 }
 
 function find(obj, fn) {
-  const key = findKey(obj, fn);
-  if (typeof key !== 'undefined') return obj[key];
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    if (fn(obj[key], key, obj)) return obj[key];
+  }
 }
 
 function findKey(obj, fn) {
-  return Object.keys(obj).find(key => fn(obj[key], key, obj));
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    if (fn(obj[key], key, obj)) return key;
+  }
 }
 
 function forEach(obj, fn) {
-  Object.keys(obj).forEach(key => fn(obj[key], key, obj));
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    fn(obj[key], key, obj);
+  }
 }
 
 function includes(obj, value) {
-  return Object.values(obj).includes(value);
-}
-
-function join(obj, separator = ',') {
-  return Object.values(obj).join(separator);
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    if (obj[key] === value) return true;
+  }
+  return false;
 }
 
 function keyOf(obj, value) {
-  return Object.keys(obj).find(key => obj[key] === value);
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    if (obj[key] === value) return key;
+  }
 }
 
-function keys(obj) {
-  return Object.keys(obj).values();
+function* keys(obj) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) yield key;
+  }
 }
 
 function map(obj, fn) {
-  return Object.keys(obj).reduce((accumulator, key) => {
-    const value = fn(obj[key], key, obj);
-    return {...accumulator, [key]: value};
-  }, {});
+  const result = {};
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    result[key] = fn(obj[key], key, obj);
+  }
+  return result;
+}
+
+function mapKeys(obj, fn) {
+  const result = {};
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    result[fn(obj[key], key, obj)] = obj[key];
+  }
+  return result;
 }
 
 function reduce(obj, fn, ...args) {
-  const entries = Object.entries(obj);
-  const keys = entries.map(([key, value]) => key);
-  const values = entries.map(([key, value]) => value);
-  return values.reduce((accumulator, value, i) => {
-    return fn(accumulator, value, keys[i], obj)
-  }, ...args);
+  const noInitialValue = {};
+  let accumulator = args.length > 0 ? args[0] : noInitialValue;
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    accumulator = accumulator === noInitialValue ? obj[key] : fn(accumulator, obj[key], key, obj);
+  }
+  if (accumulator === noInitialValue) throw TypeError('Reduce of empty object with no initial value');
+  return accumulator;
 }
 
 function some(obj, fn) {
-  return Object.keys(obj).some(key => fn(obj[key], key, obj));
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    if (fn(obj[key], key, obj)) return true;
+  }
+  return false;
 }
 
-function values(obj) {
-  return Object.values(obj).values();
+function* values(obj) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) yield obj[key];
+  }
 }
 
-module.exports = {...fns, wrap};
+module.exports = {entries, every, filter, find, findKey, forEach, includes, keyOf, keys, map, mapKeys, reduce, some, values};

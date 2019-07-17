@@ -61,10 +61,10 @@ Returns `true` if `value` is one of the values in `obj`. Otherwise, returns `fal
 ---
 
 ```javascript
-join(obj, separator = ',')
+keyOf(obj, value)
 ```
 
-Returns a string created by concatenating the values in `obj`, separated by `separator`.
+Returns the key of the first entry in `obj` that has a value of `value`. If none do, returns `undefined`.
 
 ---
 
@@ -77,18 +77,18 @@ Returns an iterator object that contains the keys for each entry in `obj`.
 ---
 
 ```javascript
-keyOf(obj, value)
-```
-
-Returns the key of the first entry in `obj` that has a value of `value`. If none do, returns `undefined`.
-
----
-
-```javascript
 map(obj, fn)
 ```
 
 Returns a new object with values returned by invoking `fn` for each entry in `obj`. `fn` is invoked with three arguments: `value`, `key`, `obj`.
+
+---
+
+```javascript
+mapKeys(obj, fn)
+```
+
+Returns a new object with keys returned by invoking `fn` for each entry in `obj`. `fn` is invoked with three arguments: `value`, `key`, `obj`.
 
 ---
 
