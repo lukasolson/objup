@@ -1,6 +1,6 @@
 {
   "name": "objup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Filter, map, reduce, etc. with objects",
   "main": "index.js",
   "scripts": {
@@ -10,8 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/lukasolson/objup.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Lukas Olson",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/lukasolson/objup/issues"
   },
