@@ -35,6 +35,33 @@ function findKey(obj, fn) {
   }
 }
 
+function flat(obj, depth = 1) {
+  const result = {};
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    if (depth <= 0 || typeof obj[key] !== 'object' || obj[key] === null) {
+      result[key] = obj[key];
+    } else {
+      Object.assign(result, flat(obj[key], depth - 1));
+    }
+  }
+  return result;
+}
+
+function flatMap(obj, fn) {
+  const result = {};
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    const value = fn(obj[key], key, obj);
+    if (typeof value !== 'object' || value === null) {
+      result[key] = value;
+    } else {
+      Object.assign(result, value);
+    }
+  }
+  return result;
+}
+
 function forEach(obj, fn) {
   for (let key in obj) {
     if (!obj.hasOwnProperty(key)) continue;
@@ -106,4 +133,4 @@ function* values(obj) {
   }
 }
 
-module.exports = {entries, every, filter, find, findKey, forEach, includes, keyOf, keys, map, mapKeys, reduce, some, values};
+module.exports = {entries, every, filter, find, findKey, flat, flatMap, forEach, includes, keyOf, keys, map, mapKeys, reduce, some, values};

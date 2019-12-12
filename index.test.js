@@ -1,4 +1,4 @@
-const {entries, every, filter, find, findKey, forEach, includes, keyOf, keys, map, mapKeys, reduce, some, values} = require('./index');
+const {entries, every, filter, find, findKey, flat, flatMap, forEach, includes, keyOf, keys, map, mapKeys, reduce, some, values} = require('./index');
 
 describe('entries', () => {
   test('returns an iterator object that contains the key/value pairs for each entry in `obj`', () => {
@@ -138,6 +138,84 @@ describe('findKey', () => {
     expect(fn.mock.calls[0][0]).toBe(value);
     expect(fn.mock.calls[0][1]).toBe('a');
     expect(fn.mock.calls[0][2]).toBe(obj);
+  });
+});
+
+describe('flat', () => {
+  test('creates a new object with all sub-elements merged into it', () => {
+    const obj = {a: 1, b: {c: 1}};
+    expect(flat(obj)).toEqual({a: 1, c: 1});
+  });
+
+  test('returns a new object even when the depth is 0', () => {
+    const obj = {a: 1};
+    expect(flat(obj, 0)).not.toBe(obj);
+    expect(flat(obj, 0)).toEqual(obj);
+  });
+
+  test('recursively flattens to the specified depth', () => {
+    const obj = {a: {b: {c: {d: {e: 1}}}}};
+    expect(flat(obj, 0)).toEqual(obj);
+    expect(flat(obj, 1)).toEqual({b: {c: {d: {e: 1}}}});
+    expect(flat(obj, 2)).toEqual({c: {d: {e: 1}}});
+    expect(flat(obj, 3)).toEqual({d: {e: 1}});
+    expect(flat(obj, 4)).toEqual({e: 1});
+  });
+
+  test('discontinues when the object is completely flat', () => {
+    const obj = {a: {b: {c: {d: {e: 1}}}}};
+    expect(flat(obj, Infinity)).toEqual({e: 1});
+  });
+
+  test('does not treat `null` as an object', () => {
+    const obj = {a: null};
+    expect(flat(obj, Infinity)).toEqual(obj);
+  });
+});
+
+describe('flatMap', () => {
+  test('returns a new flattened object with values returned by invoking `fn` for each entry in `obj`', () => {
+    const obj = {a: 1, b: 2};
+    const fn = jest.fn()
+        .mockReturnValueOnce({c: 3, d: 4})
+        .mockReturnValueOnce({e: 5, f: 6});
+    const result = flatMap(obj, fn);
+    expect(result).not.toBe(obj);
+    expect(result).toEqual({c: 3, d: 4, e: 5, f: 6});
+  });
+
+  test('only flattens to a depth of 1', () => {
+    const obj = {a: 1, b: 2};
+    const fn = jest.fn()
+        .mockReturnValueOnce({c: {d: 4}})
+        .mockReturnValueOnce({e: 5});
+    const result = flatMap(obj, fn);
+    expect(result).toEqual({c: {d: 4}, e: 5});
+  });
+
+  test('invokes `fn` with `value`, `key`, `obj`', () => {
+    const value = {};
+    const obj = {a: value};
+    const fn = jest.fn();
+    flatMap(obj, fn);
+    expect(fn.mock.calls.length).toBe(1);
+    expect(fn.mock.calls[0][0]).toBe(value);
+    expect(fn.mock.calls[0][1]).toBe('a');
+    expect(fn.mock.calls[0][2]).toBe(obj);
+  });
+
+  test('only flattens objects returned by `fn`', () => {
+    const obj = {a: 0, b: 1};
+    const fn = jest.fn()
+        .mockReturnValueOnce('a')
+        .mockReturnValueOnce({c: 3});
+    expect(flatMap(obj, fn)).toEqual({a: 'a', c: 3});
+  });
+
+  test('does not treat `null` as an object', () => {
+    const obj = {a: 1};
+    const fn = jest.fn().mockReturnValueOnce(null);
+    expect(flatMap(obj, fn)).toEqual({a: null});
   });
 });
 

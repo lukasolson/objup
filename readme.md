@@ -45,6 +45,22 @@ Returns the key of the first entry in `obj` for which invoking `fn` returns some
 ---
 
 ```javascript
+flat(obj, depth)
+```
+
+Returns a new object containing each entry in `obj`, with any values that are objects merged into it recursively up to `depth`. `depth` defaults to `1`.
+
+---
+
+```javascript
+flatMap(obj, fn)
+```
+
+Returns a new object with values returned by invoking `fn` for each entry in `obj`, with any values that are objects merged into it. `fn` is invoked with three arguments: `value`, `key`, `obj`.
+
+---
+
+```javascript
 forEach(obj, fn)
 ```
 
